@@ -1,2 +1,2 @@
 # Patriot-Hack-Hackathon-Spring-2026
-Hello! This repo includes all of our electronic materials that were used to create our spring 2026 hackathon project. If you try to implement this yourself, please be care to read all the documentation as much of this project is hardware specific.
+Hello! This repo includes all of our electronic materials that were used to create our spring 2026 hackathon project. If you try to implement this yourself, please be care to read all the documentation as much of this project is hardware specific. Additionally, please be careful when editing any code as the structure is specific to specific hardware configurations.
