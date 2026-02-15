@@ -22,12 +22,17 @@ LiquidCrystal lcd(rs, en, d4, d5, d6, d7);
 
 
 // This variable sets the threshold at which the sensor is considered "activated"
-#define SENSOR_THRESHOLD 600
+#define SENSOR_THRESHOLD 15
+
+
+// Defines positional sensors used for lateral information messages
+#define FORWARD_SENSOR A2
+#define BACKWARD_SENSOR A3
 
 
 // These store the analog sensor pins (may need to be altered if you use different pins),
 // sensor outputs, and led pin variables (may need to be altered if you use different pins)
-// NOTE: Although the sensors/leds should be layed out in a grid, they will be treated as a
+// NOTE: Although the sensors/leds should be laid out in a grid, they will be treated as a
 // 1D Array. This is to simplify the logic and make this scale, but be aware that this is an
 // assumption made during logic processing, just make sure if you edit this, that each led pin
 // and each analog input are paired by their index
@@ -47,7 +52,7 @@ void setupPins(){
 // This loops through each sensor pin and reads the analog output
 void readSensorOutput(){
   for (int i = 0; i < NUM_SENSORS; i++){
-    sensor_output[i] = analogRead(sensor_pins[i]);
+    sensor_output[i] = abs(abs(analogRead(sensor_pins[i])) - 500);
   }
 }
 
@@ -76,10 +81,15 @@ void setDisplayText(){
   }
 
 
+
+
   double percent_active = (double) num_abv_thrshld / (double) NUM_SENSORS;
 
 
+  lcd.clear();
   lcd.setCursor(0,0);
+
+
 
 
   if (percent_active < 0.25){
@@ -87,18 +97,35 @@ void setDisplayText(){
   }
   else if (percent_active <= 0.3){
     lcd.print("Signal Aquired");
+    return;
   }
   else if (percent_active <= 0.55){
     lcd.print("Close");
+    return;
   }
   else if (percent_active <= 0.75){
     lcd.print("Very Close");
+    return;
   }
   else if (percent_active <= 0.9){
     lcd.print("Almost There");
+    return;
   }
   else{
     lcd.print("Perfect");
+    return;
+  }
+
+
+  if (abs(abs(analogRead(FORWARD_SENSOR)) - 500) >= SENSOR_THRESHOLD){
+    lcd.clear();
+    lcd.setCursor(0,0);
+    lcd.print("Move Forward");
+  }
+  else if (abs(abs(analogRead(BACKWARD_SENSOR)) - 500) >= SENSOR_THRESHOLD){
+    lcd.clear();
+    lcd.setCursor(0,0);
+    lcd.print("Move Backward");
   }
 }
 
@@ -107,15 +134,14 @@ void setDisplayText(){
 void setup() {
   lcd.begin(SCREEN_WIDTH,SCREEN_HEIGHT);
   setupPins();
-  readSensorOutput(); // must be called to initalize sensor_output
+  readSensorOutput(); // must be called to initialize sensor_output
  }
 
 
-// This runs the system
+// This operates the system using the above functions
 void loop() {
   readSensorOutput();
   setLEDOutput();
   setDisplayText();
-  delay(3000);
-  lcd.clear();
+  delay(700);
  }
