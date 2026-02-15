@@ -80,52 +80,36 @@ void setDisplayText(){
     }
   }
 
-
-
-
   double percent_active = (double) num_abv_thrshld / (double) NUM_SENSORS;
-
 
   lcd.clear();
   lcd.setCursor(0,0);
 
-
-
-
   if (percent_active < 0.25){
-    lcd.print("No Signal");
+    if (abs(abs(analogRead(FORWARD_SENSOR)) - 500) >= SENSOR_THRESHOLD){
+      lcd.print("Move Forward");
+    }
+    else if (abs(abs(analogRead(BACKWARD_SENSOR)) - 500) >= SENSOR_THRESHOLD){
+      lcd.print("Move Backward");
+    }
+    else{
+      lcd.print("No Signal");
+    }
   }
   else if (percent_active <= 0.3){
     lcd.print("Signal Aquired");
-    return;
   }
   else if (percent_active <= 0.55){
     lcd.print("Close");
-    return;
   }
   else if (percent_active <= 0.75){
     lcd.print("Very Close");
-    return;
   }
   else if (percent_active <= 0.9){
     lcd.print("Almost There");
-    return;
   }
   else{
     lcd.print("Perfect");
-    return;
-  }
-
-
-  if (abs(abs(analogRead(FORWARD_SENSOR)) - 500) >= SENSOR_THRESHOLD){
-    lcd.clear();
-    lcd.setCursor(0,0);
-    lcd.print("Move Forward");
-  }
-  else if (abs(abs(analogRead(BACKWARD_SENSOR)) - 500) >= SENSOR_THRESHOLD){
-    lcd.clear();
-    lcd.setCursor(0,0);
-    lcd.print("Move Backward");
   }
 }
 
